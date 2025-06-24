@@ -25,25 +25,42 @@ if video_file is not None:
     st.info("🔍 Processando vídeo... Isso pode levar alguns segundos.")
 
     # Processamento com detecção de pose
-    pose_data, processed_video_path = run_pose_estimation(
-        "uploaded_video.mp4",
-        progress_callback=lambda p: progress_bar.progress(min(p, 1.0))
-    )
-
-    st.success("✅ Detecção de pose concluída!")
+    try:
+        pose_data, processed_video_path = run_pose_estimation(
+            "uploaded_video.mp4",
+            progress_callback=lambda p: progress_bar.progress(min(p, 1.0))
+        )
+        st.success("✅ Detecção de pose concluída!")
+    except Exception as e:
+        st.error(f"Erro ao processar o vídeo: {e}")
+        st.stop()
 
     # Geração de gráficos
     st.subheader("📈 Gráficos dos Ângulos")
     elbow_graph, knee_graph = generate_angle_graphs(pose_data)
-    st.image(elbow_graph, caption="Ângulo do Cotovelo ao Longo do Tempo")
-    st.image(knee_graph, caption="Ângulo do Joelho ao Longo do Tempo")
+
+    if elbow_graph:
+        st.image(elbow_graph, caption="Ângulo do Cotovelo ao Longo do Tempo")
+    else:
+        st.warning("⚠️ Nenhum dado válido para o cotovelo.")
+
+    if knee_graph:
+        st.image(knee_graph, caption="Ângulo do Joelho ao Longo do Tempo")
+    else:
+        st.warning("⚠️ Nenhum dado válido para o joelho.")
 
     # Diagnóstico
     st.subheader("🩺 Diagnóstico Ergonômico")
     diagnosis = generate_diagnosis(pose_data)
-    for item in diagnosis:
-        st.write("•", item)
+    if diagnosis:
+        for item in diagnosis:
+            st.write("•", item)
+    else:
+        st.info("Nenhum alerta ergonômico detectado.")
 
     # Vídeo com esqueleto
     st.subheader("🎥 Vídeo com Esqueleto Detectado")
-    st.video(processed_video_path)
+    if os.path.exists(processed_video_path):
+        st.video(processed_video_path)
+    else:
+        st.error("❌ O vídeo com esqueleto não foi gerado. Verifique se o modelo detectou pessoas no vídeo.")
