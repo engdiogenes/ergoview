@@ -1,10 +1,9 @@
-import os
 from ultralytics import YOLO
 import cv2
 import numpy as np
+import os
 
 def run_pose_estimation(video_path, progress_callback=None):
-    # Verifica se o modelo existe localmente, senão baixa automaticamente
     model_path = "yolov8n-pose.pt"
     if not os.path.exists(model_path):
         from ultralytics.utils.downloads import attempt_download_asset
@@ -14,9 +13,9 @@ def run_pose_estimation(video_path, progress_callback=None):
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps    = cap.get(cv2.CAP_PROP_FPS)
+    fps = cap.get(cv2.CAP_PROP_FPS)
 
     output_path = "output_video.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -34,9 +33,13 @@ def run_pose_estimation(video_path, progress_callback=None):
         annotated_frame = results[0].plot()
         out.write(annotated_frame)
 
-        for person in results[0].keypoints.xy:
-            keypoints = person.cpu().numpy().tolist()
-            pose_data.append({"keypoints": keypoints})
+        # Verifica se há keypoints detectados
+        if results[0].keypoints is not None and results[0].keypoints.xy is not None:
+            for person in results[0].keypoints.xy:
+                keypoints = person.cpu().numpy().tolist()
+                pose_data.append({"keypoints": keypoints})
+        else:
+            pose_data.append({"keypoints": []})  # Frame sem detecção
 
         frame_count += 1
         if progress_callback:
