@@ -1,19 +1,22 @@
 import streamlit as st
-from video_analysis import analyze_video
+import tempfile
+import os
+from yolo_pose_analysis import run_pose_estimation
 from ergonomics import generate_diagnosis
 
-st.title("Análise Ergonômica de Vídeo")
+st.title("Análise Ergonômica com YOLOv8 Pose")
 
 uploaded_file = st.file_uploader("Faça upload de um vídeo", type=["mp4", "avi", "mov"])
 
 if uploaded_file is not None:
-    with open("temp_video.mp4", "wb") as f:
-        f.write(uploaded_file.read())
+    tfile = tempfile.NamedTemporaryFile(delete=False)
+    tfile.write(uploaded_file.read())
+    video_path = tfile.name
 
-    st.video("temp_video.mp4")
+    st.video(video_path)
 
-    st.write("Processando vídeo...")
-    pose_data = analyze_video("temp_video.mp4")
+    st.write("Executando detecção de pose com YOLOv8...")
+    pose_data = run_pose_estimation(video_path)
 
     st.write("Gerando diagnóstico ergonômico...")
     diagnosis = generate_diagnosis(pose_data)
@@ -21,3 +24,5 @@ if uploaded_file is not None:
     st.subheader("Diagnóstico:")
     for item in diagnosis:
         st.write("-", item)
+
+    os.unlink(video_path)
