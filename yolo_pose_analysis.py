@@ -1,9 +1,16 @@
+import os
 from ultralytics import YOLO
 import cv2
 import numpy as np
 
 def run_pose_estimation(video_path, progress_callback=None):
-    model = YOLO("yolov8n-pose.pt")
+    # Verifica se o modelo existe localmente, senão baixa automaticamente
+    model_path = "yolov8n-pose.pt"
+    if not os.path.exists(model_path):
+        from ultralytics.utils.downloads import attempt_download_asset
+        attempt_download_asset(model_path)
+
+    model = YOLO(model_path)
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
