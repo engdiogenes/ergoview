@@ -60,7 +60,18 @@ if video_file is not None:
 
     # Vídeo com esqueleto
     st.subheader("🎥 Vídeo com Esqueleto Detectado")
+    # Vídeo com esqueleto
+    st.subheader("🎥 Vídeo com Esqueleto Detectado")
     if os.path.exists(processed_video_path):
         st.video(processed_video_path)
+
+        # Botão para download
+        with open(processed_video_path, "rb") as f:
+            st.download_button(
+                label="📥 Baixar vídeo com esqueleto",
+                data=f,
+                file_name="video_esqueleto.mp4",
+                mime="video/mp4"
+            )
     else:
         st.error("❌ O vídeo com esqueleto não foi gerado. Verifique se o modelo detectou pessoas no vídeo.")
