@@ -1,11 +1,18 @@
 import streamlit as st
+import os
 from yolo_pose_analysis import run_pose_estimation
 from ergonomics import generate_diagnosis
 
 st.title("Análise Ergonômica com Webcam")
 
+# Botão para iniciar a gravação
+st.write("Grave um vídeo com sua câmera para análise ergonômica.")
+start_recording = st.button("📷 Iniciar Gravação")
+
 # Captura de vídeo pela câmera
-video_file = st.camera_input("Grave um vídeo com sua câmera")
+video_file = None
+if start_recording:
+    video_file = st.camera_input("Gravando...")
 
 if video_file is not None:
     # Salva o vídeo capturado
