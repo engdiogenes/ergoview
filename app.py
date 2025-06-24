@@ -1,35 +1,32 @@
-from ultralytics import YOLO
-import cv2
-import numpy as np
+import streamlit as st
+import os
+from yolo_pose_analysis import run_pose_estimation
+from ergonomics import generate_diagnosis
 
-def run_pose_estimation(video_path):
-    model = YOLO("yolov8n-pose.pt")
+st.title("Análise Ergonômica com Webcam")
 
-    cap = cv2.VideoCapture(video_path)
-    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps    = cap.get(cv2.CAP_PROP_FPS)
+# Botão para iniciar a gravação
+st.write("Grave um vídeo com sua câmera para análise ergonômica.")
+start_recording = st.button("📷 Iniciar Gravação")
 
-    output_path = "output_video.mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+# Captura de vídeo pela câmera
+video_file = None
+if start_recording:
+    video_file = st.camera_input("Gravando...")
 
-    pose_data = []
+if video_file is not None:
+    # Salva o vídeo capturado
+    with open("webcam_video.mp4", "wb") as f:
+        f.write(video_file.getvalue())
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+    st.video("webcam_video.mp4")
 
-        results = model(frame, verbose=False)
-        annotated_frame = results[0].plot()
-        out.write(annotated_frame)
+    st.write("Executando detecção de pose com YOLOv8...")
+    pose_data = run_pose_estimation("webcam_video.mp4")
 
-        for person in results[0].keypoints.xy:
-            keypoints = person.cpu().numpy().tolist()
-            pose_data.append({"keypoints": keypoints})
+    st.write("Gerando diagnóstico ergonômico...")
+    diagnosis = generate_diagnosis(pose_data)
 
-    cap.release()
-    out.release()
-
-    return pose_data, output_path
+    st.subheader("Diagnóstico:")
+    for item in diagnosis:
+        st.write("-", item)
