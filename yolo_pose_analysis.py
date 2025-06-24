@@ -1,29 +1,35 @@
 import cv2
-import numpy as np
 from ultralytics import YOLO
 
 def run_pose_estimation(video_path):
-    model = YOLO("yolov8n-pose.pt")  # modelo leve de pose
+    """
+    Executa a detecção de pose com YOLOv8 em um vídeo.
+    Retorna uma lista de dicionários com coordenadas das articulações por frame.
+    """
+    model = YOLO("yolov8n-pose.pt")  # Certifique-se de que o modelo está disponível
     cap = cv2.VideoCapture(video_path)
-    pose_data = []
+    frame_data = []
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        results = model(frame, verbose=False)
-        keypoints = results[0].keypoints
+        results = model.predict(source=frame, save=False, verbose=False)
 
-        if keypoints is not None and keypoints.xy is not None:
-            joints = {}
-            for idx, (x, y) in enumerate(keypoints.xy[0]):
-                joints[f'joint_{idx}'] = {
-                    'x': float(x),
-                    'y': float(y),
-                    'confidence': float(keypoints.conf[0][idx])
-                }
-            pose_data.append(joints)
+        joints = {}
+        if results and results[0].keypoints and results[0].keypoints.xy is not None:
+            keypoints = results[0].keypoints
+            if len(keypoints.xy) > 0:
+                for idx, (x, y) in enumerate(keypoints.xy[0]):
+                    joints[f'joint_{idx}'] = {
+                        'x': float(x),
+                        'y': float(y),
+                        'z': 0.0,
+                        'visibility': 1.0
+                    }
+
+        frame_data.append(joints)
 
     cap.release()
-    return pose_data
+    return frame_data
