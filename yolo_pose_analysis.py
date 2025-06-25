@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 def run_pose_estimation(video_path, progress_callback=None):
-    model_path = "yolov8n-pose.pt"
+    model_path = "yolov11n-pose.pt"
     if not os.path.exists(model_path):
         from ultralytics.utils.downloads import attempt_download_asset
         attempt_download_asset(model_path)
