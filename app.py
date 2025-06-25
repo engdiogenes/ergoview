@@ -6,16 +6,20 @@ from yolo_pose_analysis import run_pose_estimation
 from ergonomics import generate_diagnosis
 from angle_graphs import generate_angle_graphs
 
+# Configuração da página
+st.set_page_config(page_title="Análise Ergonômica com YOLOv11", layout="centered")
+
+st.title("📊 Análise Ergonômica com Vídeo")
+st.write("Grave um vídeo com seu celular ou computador e envie abaixo para análise ergonômica.")
+
+# Função para calcular ângulo entre três pontos
 def calculate_angle(a, b, c):
     a, b, c = np.array(a), np.array(b), np.array(c)
     ba = a - b
     bc = c - b
     cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc) + 1e-6)
     angle = np.arccos(np.clip(cosine_angle, -1.0, 1.0))
-    return np.degrees_page_config(page_title="Análise Ergonômica com YOLOv11", layout="centered")
-st.title("📊 Análise Ergonômica com Vídeo")
-
-st.write("Grave um vídeo com seu celular ou computador e envie abaixo para análise ergonômica.")
+    return np.degrees(angle)
 
 # Upload do vídeo
 video_file = st.file_uploader("📁 Envie um vídeo no formato .mp4", type=["mp4"])
@@ -25,7 +29,9 @@ if video_file is not None:
         f.write(video_file.read())
 
     st.subheader("🎬 Vídeo Original")
-    st.video st.progress(0.0)
+    st.video("uploaded_video.mp4")
+
+    progress_bar = st.progress(0.0)
     st.info("🔍 Processando vídeo... Isso pode levar alguns segundos.")
     start_time = time.time()
 
