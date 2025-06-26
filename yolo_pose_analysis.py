@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import os
 
-def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, resize_to=(640, 360), save_annotated_video=False):
+def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, save_annotated_video=False):
     model_path = "yolo11n-pose.pt"
 
     if not os.path.exists(model_path):
@@ -14,13 +14,15 @@ def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, resize
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     output_path = "output_video.mp4"
     out = None
     if save_annotated_video:
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(output_path, fourcc, fps, resize_to)
+        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     pose_data = []
     frame_count = 0
@@ -35,7 +37,7 @@ def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, resize
             frame_count += 1
             continue
 
-        frame = cv2.resize(frame, resize_to)
+        # Mantém a resolução original
         results = model(frame, verbose=False)
 
         if save_annotated_video:
