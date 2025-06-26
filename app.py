@@ -130,7 +130,6 @@ if video_file is not None and st.session_state.pose_data is None:
             "uploaded_video.mp4",
             progress_callback=atualizar_progresso,
             frame_skip=2,
-            resize_to=(640, 360),
             save_annotated_video=True
         )
         running = False
