@@ -104,34 +104,35 @@ if video_file is not None and st.session_state.pose_data is None:
 
     st.subheader("🎬 Vídeo Original")
     st.video("uploaded_video.mp4")
+
     timer_placeholder = st.empty()
     progress_bar = st.progress(0.0)
     st.info("🔍 Processando vídeo... Isso pode levar alguns segundos.")
-
     start_time = time.time()
     running = True
-
 
     def update_timer():
         while running:
             elapsed = time.time() - start_time
             timer_placeholder.markdown(f"⏱️ Tempo decorrido: **{elapsed:.1f} segundos**")
             time.sleep(0.1)
+
+    # ✅ Função de progresso definida corretamente
+    def atualizar_progresso(p):
+        progress_bar.progress(min(p, 1.0))
+
     timer_thread = threading.Thread(target=update_timer)
     timer_thread.start()
-    
-    def atualizar_progresso(p):
-    progress_bar.progress(min(p, 1.0))
 
     try:
+        # ✅ Chamada otimizada com parâmetros adicionais
         pose_data, processed_video_path = run_pose_estimation(
-    "uploaded_video.mp4",
-    progress_callback=atualizar_progresso,
-    frame_skip=2,
-    resize_to=(640, 360),
-    save_annotated_video=True  # ou False se não quiser gerar vídeo
-)
-
+            "uploaded_video.mp4",
+            progress_callback=atualizar_progresso,
+            frame_skip=2,
+            resize_to=(640, 360),
+            save_annotated_video=True
+        )
         running = False
         timer_thread.join()
         elapsed_time = time.time() - start_time
@@ -143,6 +144,7 @@ if video_file is not None and st.session_state.pose_data is None:
         timer_thread.join()
         st.error(f"Erro ao processar o vídeo: {e}")
         st.stop()
+
 
 if st.session_state.pose_data:
     pose_data = st.session_state.pose_data
