@@ -121,6 +121,8 @@ if video_file is not None and st.session_state.pose_data is None:
     timer_thread.start()
 
     try:
+        def atualizar_progresso(p):
+    progress_bar.progress(min(p, 1.0))
         pose_data, processed_video_path = run_pose_estimation(
     "uploaded_video.mp4",
     progress_callback=atualizar_progresso,
