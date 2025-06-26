@@ -5,6 +5,8 @@ import os
 
 def run_pose_estimation(video_path, progress_callback=None):
     model_path = "yolo11n-pose.pt"
+    
+    # Baixa o modelo se não estiver presente
     if not os.path.exists(model_path):
         from ultralytics.utils.downloads import attempt_download_asset
         attempt_download_asset(model_path)
@@ -42,8 +44,13 @@ def run_pose_estimation(video_path, progress_callback=None):
             pose_data.append({"keypoints": []})  # Frame sem detecção
 
         frame_count += 1
+
+        # Atualiza a barra de progresso, se fornecida
         if progress_callback:
-            progress_callback(frame_count / total_frames)
+            try:
+                progress_callback(frame_count / total_frames)
+            except Exception as e:
+                print(f"Erro ao atualizar progresso: {e}")
 
     cap.release()
     out.release()
