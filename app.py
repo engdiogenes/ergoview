@@ -29,14 +29,14 @@ def calculate_angle(a, b, c):
     return np.degrees(angle)
 
 
-def detectar_desvios_com_persistencia(pose_data2, fps=30, persistencia_minima=30):
+def detectar_desvios_com_persistencia(pose_data, fps=30, persistencia_minima=30):
     desvios_por_tipo = {
         "Inclinação excessiva do tronco": [],
         "Braço elevado acima do ombro": [],
         "Flexão profunda do joelho": []
     }
 
-    for i, frame in enumerate(pose_data2):
+    for i, frame in enumerate(pose_data):
         keypoints = frame["keypoints"]
         try:
             neck = np.mean([keypoints[5], keypoints[6]], axis=0)
@@ -122,9 +122,13 @@ if video_file is not None and st.session_state.pose_data is None:
 
     try:
         pose_data, processed_video_path = run_pose_estimation(
-            "uploaded_video.mp4",
-            progress_callback=lambda p: progress_bar.progress(min(p, 1.0))
-        )
+    "uploaded_video.mp4",
+    progress_callback=atualizar_progresso,
+    frame_skip=2,
+    resize_to=(640, 360),
+    save_annotated_video=True  # ou False se não quiser gerar vídeo
+)
+
         running = False
         timer_thread.join()
         elapsed_time = time.time() - start_time
