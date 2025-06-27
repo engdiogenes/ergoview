@@ -149,6 +149,7 @@ if video_file is not None and st.session_state.pose_data is None:
 
 
 if st.session_state.pose_data:
+    pose_data = st.session_state.pose_data
     metricas = analisar_metricas_ergonomicas(pose_data)
 
     col1, col2, col3 = st.columns(3)
@@ -291,3 +292,5 @@ if st.session_state.pose_data:
             )
     else:
         st.error("❌ O vídeo com esqueleto não foi gerado.")
+        st.error("❌ Dados de pose não carregados. Verifique se o vídeo foi processado corretamente.")
+        st.stop()
