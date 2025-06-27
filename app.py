@@ -8,6 +8,8 @@ from yolo_pose_analysis import run_pose_estimation
 from ergonomics import generate_diagnosis
 from angle_graphs import generate_angle_graphs
 import cv2
+from analise_ergonomica import analisar_metricas_ergonomicas
+
 
 st.set_page_config(page_title="Análise Ergonômica com YOLOv11", layout="centered")
 
@@ -146,7 +148,6 @@ if video_file is not None and st.session_state.pose_data is None:
 
 
 if st.session_state.pose_data:
-    from analise_ergonomica import analisar_metricas_ergonomicas
 
     metricas = analisar_metricas_ergonomicas(pose_data)
 
