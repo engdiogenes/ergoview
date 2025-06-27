@@ -148,6 +148,26 @@ if video_file is not None and st.session_state.pose_data is None:
 if st.session_state.pose_data:
     pose_data = st.session_state.pose_data
 
+    from analise_ergonomica import analisar_metricas_ergonomicas
+
+metricas = analisar_metricas_ergonomicas(pose_data)
+
+col1, col2, col3 = st.columns(3)
+col1.metric("Posturas Inadequadas", metricas["Posturas Inadequadas"], "NR-17")
+col2.metric("Movimentos Repetitivos", metricas["Movimentos Repetitivos"], "NR-17")
+col3.metric("Posturas Forçadas", metricas["Posturas Forçadas"], "NR-17")
+
+col4, col5, col6 = st.columns(3)
+col4.metric("Pausas/Ritmo de Trabalho", metricas["Pausas/Ritmo de Trabalho"], "NR-17")
+col5.metric("Mobiliário/Layout", metricas["Mobiliário/Layout"], "NR-17")
+col6.metric("Ângulos Articulares Extremos", metricas["Ângulos Articulares Extremos"], "ISO 11226")
+
+col7, col8, col9 = st.columns(3)
+col7.metric("Posturas Estáticas", metricas["Posturas Estáticas"], "ISO 11226")
+col8.metric("Risco Postural", metricas["Risco Postural"], "ISO 11226")
+col9.metric("Postura Sentada", metricas["Postura Sentada"], "ISO 9241")
+
+
     st.subheader("📈 Gráficos dos Ângulos")
     elbow_graph, knee_graph = generate_angle_graphs(pose_data)
 
