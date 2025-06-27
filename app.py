@@ -161,7 +161,7 @@ if st.session_state.pose_data:
     col6.metric("Ângulos Articulares Extremos", metricas["Ângulos Articulares Extremos"], "ISO 11226")
 
     col7, col8, col9 = st.columns(3)
-    col7.metric("Posturas Estáticas", metricas["Posturas Estáticas"], "ISO 11226")
+    col7.metric("Posturas Estáticas", metricas["Posturas Estáticas (>4s)"], "ISO 11226")
     col8.metric("Risco Postural", metricas["Risco Postural"], "ISO 11226")
     col9.metric("Postura Sentada", metricas["Postura Sentada"], "ISO 9241")
     pose_data = st.session_state.pose_data
