@@ -149,7 +149,6 @@ if video_file is not None and st.session_state.pose_data is None:
 
 
 if st.session_state.pose_data:
-    pose_data = st.session_state.pose_data
     metricas = analisar_metricas_ergonomicas(pose_data)
 
     col1, col2, col3 = st.columns(3)
