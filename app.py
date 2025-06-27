@@ -165,6 +165,37 @@ if st.session_state.pose_data:
     col7.metric("Posturas Estáticas", metricas["Posturas Estáticas (>4s)"], "ISO 11226")
     col8.metric("Risco Postural", metricas["Risco Postural"], "ISO 11226")
     col9.metric("Postura Sentada", metricas["Postura Sentada"], "ISO 9241")
+
+    st.markdown("### 📌 Descrições detalhadas das violações")
+
+    if metricas["Posturas Inadequadas"] > 0:
+        st.warning(
+            f"🔸 Foram detectadas {metricas['Posturas Inadequadas']} ocorrências de posturas inadequadas, como inclinação excessiva do tronco, elevação dos braços acima do ombro ou flexão profunda dos joelhos. Essas posturas devem ser evitadas conforme a NR-17.")
+
+    if metricas["Movimentos Repetitivos"] > 0:
+        st.warning(
+            "🔸 Foram identificados movimentos repetitivos com os membros superiores, o que pode causar fadiga muscular e lesões por esforço repetitivo (LER/DORT), conforme a NR-17.")
+
+    if metricas["Posturas Forçadas (>90s)"] > 0:
+        st.warning(
+            "🔸 Foram detectadas posturas forçadas mantidas por mais de 90 segundos, como flexão profunda dos joelhos. Isso representa risco ergonômico elevado segundo a NR-17.")
+
+    if metricas["Pausas/Ritmo de Trabalho"] == 0:
+        st.warning(
+            "🔸 Não foram detectadas pausas significativas durante a atividade. A NR-17 recomenda pausas para recuperação física e mental.")
+
+    if metricas["Ângulos Articulares Extremos"] > 0:
+        st.warning(
+            f"🔸 Foram identificadas {metricas['Ângulos Articulares Extremos']} ocorrências de ângulos articulares extremos (ex: tronco < 90°, braço > 150°, joelho < 60°), o que representa risco postural segundo a ISO 11226.")
+
+    if metricas["Posturas Estáticas (>4s)"] > 0:
+        st.warning(
+            f"🔸 Foram detectadas {metricas['Posturas Estáticas (>4s)']} posturas estáticas mantidas por mais de 4 segundos, o que pode causar fadiga muscular e deve ser evitado conforme a ISO 11226.")
+
+    if metricas["Risco Postural"] in ["Moderado", "Alto"]:
+        st.warning(
+            f"🔸 A classificação geral de risco postural foi **{metricas['Risco Postural']}**, indicando necessidade de intervenção ergonômica segundo a ISO 11226.")
+
     pose_data = st.session_state.pose_data
 
     st.subheader("📈 Gráficos dos Ângulos")
