@@ -1,6 +1,7 @@
 # Análise Ergonômica com Streamlit
 
 Este projeto realiza uma análise ergonômica automatizada de vídeos de operadores em processos produtivos, utilizando visão computacional com MediaPipe e uma interface interativa com Streamlit.
+Desenvolvido por : Eng Diógenes Oliveira
 
 ## 🔍 Funcionalidades
 
