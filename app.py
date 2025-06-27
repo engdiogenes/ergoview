@@ -292,5 +292,3 @@ if st.session_state.pose_data:
             )
     else:
         st.error("❌ O vídeo com esqueleto não foi gerado.")
-        st.error("❌ Dados de pose não carregados. Verifique se o vídeo foi processado corretamente.")
-        st.stop()
