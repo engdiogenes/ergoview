@@ -12,8 +12,8 @@ def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, save_a
         attempt_download_asset(model_path)
 
     # ✅ Carregamento forçado com weights_only=False
-    model_data = torch.load(model_path, weights_only=False)
-    model = YOLO(model_data)
+    from ultralytics import YOLO
+    model = YOLO("yolo11n-pose.pt")
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
