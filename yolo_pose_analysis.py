@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from ultralytics.nn.tasks import PoseModel
+from torch.nn.modules.container import Sequential
 from torch.serialization import safe_globals
 import cv2
 import numpy as np
@@ -12,8 +13,8 @@ def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, save_a
         from ultralytics.utils.downloads import attempt_download_asset
         attempt_download_asset(model_path)
 
-    # ✅ Carregamento seguro com contexto para PoseModel
-    with safe_globals([PoseModel]):
+    # ✅ Carregamento seguro com contexto para PoseModel e Sequential
+    with safe_globals([PoseModel, Sequential]):
         model = YOLO(model_path)
 
     cap = cv2.VideoCapture(video_path)
