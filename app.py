@@ -123,8 +123,8 @@ if video_file is not None and st.session_state.pose_data is None:
 
     timer_thread = threading.Thread(target=update_timer)
     timer_thread.start()
-    
-    
+
+
     from yolo_pose_analysis import run_pose_estimation
     try:
         # ✅ Chamada otimizada com parâmetros adicionais
@@ -277,6 +277,19 @@ if st.session_state.pose_data:
 
         csv = df_desvios.to_csv(index=False).encode("utf-8")
         st.download_button("📥 Baixar CSV dos Desvios", data=csv, file_name="desvios_nr17.csv", mime="text/csv")
+        # 🔽 Baixar vídeo com alertas visuais
+        video_alertas_path = gerar_video_com_alertas(df_desvios)
+        if video_alertas_path and os.path.exists(video_alertas_path):
+            with open(video_alertas_path, "rb") as f:
+                st.download_button(
+                    label="📥 Baixar vídeo com alertas visuais",
+                    data=f,
+                    file_name="video_com_alertas.mp4",
+                    mime="video/mp4"
+                )
+        else:
+            st.warning("⚠️ O vídeo com alertas visuais não pôde ser gerado.")
+
     else:
         st.info("Nenhum desvio postural detectado conforme NR-17.")
 
