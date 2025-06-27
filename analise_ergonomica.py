@@ -36,10 +36,19 @@ def analisar_metricas_ergonomicas(pose_data, fps=30):
     joelho_flexionado_duracao = 0
     inatividade_frames = 0
 
+    extremos_duracao = 0
+    extremos_eventos = 0
+    extremos_ativo = False
+
     for i, frame in enumerate(pose_data):
         keypoints = frame.get("keypoints", [])
         if len(keypoints) < 16:
             inatividade_frames += 1
+            tronco_inclinado = False
+            braco_elevado = False
+            joelho_flexionado = False
+            extremos_ativo = False
+            extremos_duracao = 0
             continue
 
         try:
@@ -75,11 +84,23 @@ def analisar_metricas_ergonomicas(pose_data, fps=30):
             if joelho_desvio:
                 joelho_flexionado_duracao += 1
 
-            if tronco_angle < 90 or braco_angle > 150 or joelho_angle < 60:
-                angulos_articulares_extremos += 1
+            # Ângulos articulares extremos com filtro de 5 segundos
+            extremo = tronco_angle < 90 or braco_angle > 150 or joelho_angle < 60
+            if extremo:
+                extremos_duracao += 1
+                if not extremos_ativo:
+                    extremos_ativo = True
+            else:
+                if extremos_ativo and extremos_duracao >= 5 * fps:
+                    extremos_eventos += 1
+                extremos_ativo = False
+                extremos_duracao = 0
 
         except Exception:
             continue
+
+    if extremos_ativo and extremos_duracao >= 5 * fps:
+        extremos_eventos += 1
 
     posturas_inadequadas = tronco_inclinado_eventos + braco_elevado_eventos + joelho_flexionado_eventos
 
@@ -89,7 +110,7 @@ def analisar_metricas_ergonomicas(pose_data, fps=30):
     if tronco_inclinado_duracao / fps > 4:
         posturas_estaticas = tronco_inclinado_eventos
 
-    total_desvios = posturas_inadequadas + angulos_articulares_extremos
+    total_desvios = posturas_inadequadas + extremos_eventos
     if total_desvios > 100:
         risco_postural = "Alto"
     elif total_desvios > 30:
@@ -107,7 +128,7 @@ def analisar_metricas_ergonomicas(pose_data, fps=30):
         "Posturas Forçadas (>90s)": posturas_forcadas,
         "Pausas/Ritmo de Trabalho": pausas_ritmo,
         "Mobiliário/Layout": mobiliario_layout,
-        "Ângulos Articulares Extremos": angulos_articulares_extremos,
+        "Ângulos Articulares Extremos": extremos_eventos,
         "Posturas Estáticas (>4s)": posturas_estaticas,
         "Risco Postural": risco_postural,
         "Postura Sentada": postura_sentada
