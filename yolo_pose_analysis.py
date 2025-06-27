@@ -1,8 +1,4 @@
 from ultralytics import YOLO
-from ultralytics.nn.tasks import PoseModel
-import torch
-from torch.nn.modules.container import Sequential
-from torch.serialization import safe_globals
 import cv2
 import numpy as np
 import os
@@ -10,14 +6,13 @@ import os
 def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, save_annotated_video=False):
     model_path = "yolo11n-pose.pt"
 
+    # Baixa o modelo se não estiver presente
     if not os.path.exists(model_path):
         from ultralytics.utils.downloads import attempt_download_asset
         attempt_download_asset(model_path)
 
-    # ✅ Permitir múltiplas classes com contexto seguro
-    with safe_globals([PoseModel, Sequential]):
-        model = YOLO(model_path)
-
+    # ✅ Carregamento seguro e recomendado do modelo
+    model = YOLO(model_path)
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
