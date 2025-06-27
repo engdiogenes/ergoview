@@ -146,10 +146,11 @@ if video_file is not None and st.session_state.pose_data is None:
         st.error(f"Erro ao processar o vídeo: {e}")
         st.stop()
 
+metricas = analisar_metricas_ergonomicas(pose_data)
 
 if st.session_state.pose_data:
 
-    metricas = analisar_metricas_ergonomicas(pose_data)
+    
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Posturas Inadequadas", metricas["Posturas Inadequadas"], "NR-17")
