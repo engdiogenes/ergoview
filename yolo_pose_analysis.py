@@ -1,6 +1,8 @@
 from ultralytics import YOLO
 from ultralytics.nn.tasks import PoseModel
 import torch
+from torch.nn.modules.container import Sequential
+from torch.serialization import safe_globals
 import cv2
 import numpy as np
 import os
@@ -12,9 +14,10 @@ def run_pose_estimation(video_path, progress_callback=None, frame_skip=2, save_a
         from ultralytics.utils.downloads import attempt_download_asset
         attempt_download_asset(model_path)
 
-    # ✅ Permitir deserialização segura do modelo no PyTorch 2.6+
-    torch.serialization.add_safe_globals([PoseModel])
-    model = YOLO(model_path)
+    # ✅ Permitir múltiplas classes com contexto seguro
+    with safe_globals([PoseModel, Sequential]):
+        model = YOLO(model_path)
+
 
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
