@@ -4,7 +4,6 @@ import numpy as np
 import time
 import pandas as pd
 import threading
-from yolo_pose_analysis import run_pose_estimation
 from ergonomics import generate_diagnosis
 from angle_graphs import generate_angle_graphs
 import cv2
@@ -124,7 +123,9 @@ if video_file is not None and st.session_state.pose_data is None:
 
     timer_thread = threading.Thread(target=update_timer)
     timer_thread.start()
-
+    
+    
+    from yolo_pose_analysis import run_pose_estimation
     try:
         # ✅ Chamada otimizada com parâmetros adicionais
         pose_data, processed_video_path = run_pose_estimation(
