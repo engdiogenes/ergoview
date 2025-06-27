@@ -153,7 +153,7 @@ if st.session_state.pose_data:
     col1, col2, col3 = st.columns(3)
     col1.metric("Posturas Inadequadas", metricas["Posturas Inadequadas"], "NR-17")
     col2.metric("Movimentos Repetitivos", metricas["Movimentos Repetitivos"], "NR-17")
-    col3.metric("Posturas Forçadas", metricas["Posturas Forçadas"], "NR-17")
+    col3.metric("Posturas Forçadas", metricas["Posturas Forçadas (>90s)"], "NR-17")
 
     col4, col5, col6 = st.columns(3)
     col4.metric("Pausas/Ritmo de Trabalho", metricas["Pausas/Ritmo de Trabalho"], "NR-17")
