@@ -10,7 +10,6 @@ from angle_graphs import generate_angle_graphs
 import cv2
 from analise_ergonomica import analisar_metricas_ergonomicas
 
-
 st.set_page_config(page_title="Análise Ergonômica com YOLOv11", layout="centered")
 
 if "pose_data" not in st.session_state:
