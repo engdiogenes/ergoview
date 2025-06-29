@@ -271,7 +271,7 @@ with tab3:
         fig1.update_layout(title="Evolução dos Ângulos com Limites Ergonômicos",
                            xaxis_title="Tempo (s)", yaxis_title="Ângulo (graus)")
 
-        st.plotly_chart(fig1)
+        st.plotly_chart(fig1, use_container_width=True)
 
         # Gráfico 2: Histograma dos Ângulos
         fig2 = go.Figure()
@@ -298,19 +298,19 @@ with tab3:
             yaxis_title="Frequência"
         )
 
-        st.plotly_chart(fig2)
+        st.plotly_chart(fig2, use_container_width=True)
 
         # Gráfico 3: Contagem de Desvios por Tipo
         st.dataframe(df_desvios.head())
         contagem = df_desvios["Desvio"].value_counts().reset_index()
         contagem.columns = ["Desvio", "Contagem"]
         fig3 = px.bar(contagem, x="Desvio", y="Contagem", title="Contagem de Desvios por Tipo")
-        st.plotly_chart(fig3)
+        st.plotly_chart(fig3, use_container_width=True)
 
         # Gráfico 4: Dispersão de Ângulo vs Tempo
         fig4 = px.scatter(df_desvios, x="Tempo (s)", y="Ângulo", color="Desvio",
                           title="Desvios Detectados: Ângulo vs Tempo")
-        st.plotly_chart(fig4)
+        st.plotly_chart(fig4, use_container_width=True)
 
         st.subheader("🧠 Diagnóstico Ergonômico")
         diagnosis = gerar_diagnostico_avancado(metricas, df_desvios)
